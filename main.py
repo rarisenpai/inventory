@@ -14,8 +14,17 @@ def drug_update(drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, 
         WHERE D_id = ?
     ''', (drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, drug_id))
     conn.commit()
-
-
+    
+def update_sales(drug_quantity,drug_id):
+    drug_value = c.execute('''SELECT D_Qty from Drugs where D_id = ?'''),(drug_id)
+    updated_drug_quantity = drug_value - drug_quantity 
+    c.execute('''
+        UPDATE Drugs 
+        SET D_Qty = ?
+        WHERE D_id = ?
+    ''', (updated_drug_quantity, drug_id))
+    conn.commit()
+    
 def drug_delete(Did):
     c.execute(''' DELETE FROM Drugs WHERE D_id = ?''', (Did,))
     conn.commit()
@@ -51,7 +60,7 @@ def admin():
     st.title("Pharmacy Database Dashboard")
     menu = ["Drugs"]
     st.sidebar.selectbox("Menu",menu)
-    menu = ["Add", "View", "Update", "Delete"]
+    menu = ["Add", "View", "Update", "Delete", "Sales"]
     choice = st.sidebar.selectbox("Menu", menu)
     if choice == "Add":
         with st.form(key='add_drug_form'):
@@ -110,6 +119,20 @@ def admin():
         did = st.text_input("Drug ID")
         if st.button(label="Delete"):
             drug_delete(did)
+            
+    if choice == 'Sales':
+        st.subheader('make sales')
+        col1, col2 = st.columns(2)
+
+        with col1:
+            drug_id = st.text_input("Enter the Drug id")
+        with col2:
+            drug_quantity = st.text_input("Enter the number sold:")
+
+        if st.form_submit_button("Sell Drug"):
+            update_sales(drug_id,drug_quantity)
+            st.success("Successfully Added Data")
+        
 
 if __name__ == '__main__':
     drug_create_table()
