@@ -7,12 +7,12 @@ st. set_page_config(layout="wide")
 conn = sqlite3.connect("drug_data.db",check_same_thread=False)
 c = conn.cursor()
 
-def drug_update(drug_name, drug_expiry, drug_quantity,drug_price, drug_id):
+def drug_update(drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, drug_id):
     c.execute('''
         UPDATE Drugs 
-        SET D_Name = ?, D_ExpDate = ?,D_price=?, D_Qty = ?
+        SET D_Name = ?, D_ExpDate = ?, D_Use = ?,D_price=?, D_Qty = ?
         WHERE D_id = ?
-    ''', (drug_name, drug_expiry, drug_quantity,drug_price, drug_id))
+    ''', (drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, drug_id))
     conn.commit()
 
 def update_sales(drug_quantity,drug_id):
@@ -34,6 +34,7 @@ def drug_create_table():
     c.execute('''CREATE TABLE IF NOT EXISTS Drugs(
                 D_Name VARCHAR(50) NOT NULL,
                 D_ExpDate DATE NOT NULL, 
+                D_Use INT NOT NULL,
                 D_Qty INT NOT NULL, 
                 D_Price INT NOT NULL,
                 D_id INT PRIMARY KEY NOT NULL
@@ -41,8 +42,8 @@ def drug_create_table():
                 ''')
     print('DRUG Table create Successfully')
 
-def drug_add_data(Dname, Dexpdate, Dqty, Dprice,Did):
-    c.execute('''INSERT INTO Drugs (D_Name, D_Expdate, D_Qty, D_price,D_id) VALUES(?,?,?,?,?)''', (Dname, Dexpdate,Dqty,Dprice, Did))
+def drug_add_data(Dname, Dexpdate, Duse, Dqty, Dprice,Did):
+    c.execute('''INSERT INTO Drugs (D_Name, D_Expdate, D_Use, D_Qty, D_price,D_id) VALUES(?,?,?,?,?,?)''', (Dname, Dexpdate, Duse,Dqty,Dprice, Did))
     conn.commit()
 
 def drug_view_all_data(search_term=None):
@@ -68,13 +69,14 @@ def admin():
             with col1:
                 drug_name = st.text_input("Enter the Drug Name")
                 drug_expiry = st.date_input("Expiry Date of Drug (YYYY-MM-DD)")
-                drug_quantity = st.text_input("Enter the quantity")
+                drug_mainuse = st.text_input("Milligrams")
             with col2:
+                drug_quantity = st.text_input("Enter the quantity")
                 drug_price = st.text_input("Enter the price")
                 drug_id = st.text_input("Enter the Drug id (example:#D1)")
 
             if st.form_submit_button("Add Drug"):
-                drug_add_data(drug_name,drug_expiry,drug_quantity,drug_price, drug_id)
+                drug_add_data(drug_name,drug_expiry,drug_mainuse,drug_quantity,drug_price, drug_id)
                 st.success("Successfully Added Data")
     if choice == "View":
         st.subheader("Drug Details")
@@ -86,7 +88,7 @@ def admin():
         else:
             drug_result = drug_view_all_data()
 
-        drug_clean_df = pd.DataFrame(drug_result, columns=["Name", "Expiry Date", "Quantity","price" ,"ID"])
+        drug_clean_df = pd.DataFrame(drug_result, columns=["Name", "Expiry Date", "Milligrams", "Quantity","price" ,"ID"])
         drug_clean_df.index+=1
         st.table(drug_clean_df)
 
@@ -101,13 +103,14 @@ def admin():
             with col1:
                 drug_name = st.text_input("Enter the Drug Name")
                 drug_expiry = st.date_input("Expiry Date of Drug (YYYY-MM-DD)")
-                drug_quantity = st.text_input("Enter the quantity")
+                drug_mainuse = st.text_input("Milligrams")
             with col2:
+                drug_quantity = st.text_input("Enter the quantity")
                 drug_price = st.text_input("Enter the price")
                 drug_id = st.text_input("Enter the Drug id (example:#D1)")
 
             if st.form_submit_button("Update Drug"):
-                drug_update(drug_name,drug_expiry,drug_quantity,drug_price,drug_id)
+                drug_update(drug_name,drug_expiry,drug_mainuse,drug_quantity,drug_price,drug_id)
                 st.success("Successfully Added Data")
     if choice == 'Delete':
         st.subheader("Delete Drugs")
