@@ -167,7 +167,7 @@ def admin():
                 item = st.text_input("Enter the Drug name")
             with col2:
                 drug_quantity = st.text_input("Enter the number sold:")
-                price = int(st.text_input('Enter price))      
+                price = int(st.text_input('Enter price'))      
         
             if st.form_submit_button("Sell Drug"):
                 update_sales(drug_id,drug_quantity)
