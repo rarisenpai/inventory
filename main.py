@@ -49,7 +49,7 @@ def admin():
 
 
     st.title("Pharmacy Database Dashboard")
-    st.sidebar.selectbox("Drugs")
+    st.sidebar.write("Drugs")
     menu = ["Add", "View", "Update", "Delete"]
     choice = st.sidebar.selectbox("Menu", menu)
     if choice == "Add":
