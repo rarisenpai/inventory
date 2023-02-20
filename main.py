@@ -172,22 +172,22 @@ def admin():
             if st.form_submit_button("Sell Drug"):
                 update_sales(drug_id,drug_quantity)
                 record_sale(date, item, drug_quantity, price)
-                st.success("Successfully Added Data")
-            if choice == "View sales":
-                st.subheader("sales Details")
+                st.success("Successfully Added Data")              
+    if choice == "View sales":
+        st.subheader("sales Details")
 
-                search_term = st.text_input("Search for sales")
-                search = st.checkbox("Search")
-                if search:
-                    sales_result = sales_view_all_data(search_term)
-                else:
-                    sales_result = sales_view_all_data()
+        search_term = st.text_input("Search for sales")
+        search = st.checkbox("Search")
+        if search:
+            sales_result = sales_view_all_data(search_term)
+        else:
+            sales_result = sales_view_all_data()
 
-                sales_clean_df = pd.DataFrame(sales_result, columns=["Name", "Expiry Date", "Milligrams", "Quantity","price" ,"ID"])
-                sales_clean_df.index+=1
-                st.table(sales_clean_df)
-                if st.button('export sales'):
-                    export_sales(sale)
+        sales_clean_df = pd.DataFrame(sales_result, columns=["Name", "Expiry Date", "Milligrams", "Quantity","price" ,"ID"])
+        sales_clean_df.index+=1
+        st.table(sales_clean_df)
+        if st.button('export sales'):
+            export_sales(sale)
             
 
 if __name__ == '__main__':
