@@ -121,17 +121,18 @@ def admin():
             drug_delete(did)
             
     if choice == 'Sales':
-        st.subheader('make sales')
-        col1, col2 = st.columns(2)
+        with st.form(key='sell_drug_form'):
+            st.subheader('make sales')
+            col1, col2 = st.columns(2)
 
-        with col1:
-            drug_id = st.text_input("Enter the Drug id")
-        with col2:
-            drug_quantity = st.text_input("Enter the number sold:")
+            with col1:
+                drug_id = st.text_input("Enter the Drug id")
+            with col2:
+                drug_quantity = st.text_input("Enter the number sold:")
 
-        if st.form_submit_button("Sell Drug"):
-            update_sales(drug_id,drug_quantity)
-            st.success("Successfully Added Data")
+            if st.form_submit_button("Sell Drug"):
+                update_sales(drug_id,drug_quantity)
+                st.success("Successfully Added Data")
         
 
 if __name__ == '__main__':
