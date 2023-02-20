@@ -45,7 +45,7 @@ def export_sales(filename):
 
 def sales_view_all_data(search_term=None):
     if search_term:
-        c.execute("SELECT * FROM sales WHERE D_Name LIKE ?", ('%' + search_term + '%',))
+        c.execute("SELECT * FROM sales WHERE item LIKE ?", ('%' + search_term + '%',))
     else:
         c.execute('SELECT * FROM sales')
     sales_data = c.fetchall()
