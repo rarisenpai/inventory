@@ -41,6 +41,15 @@ def export_sales(filename):
         writer.writerow(['Date', 'Item', 'Quantity', 'Price', 'Total'])
         for row in rows:
             writer.writerow(row)
+            
+
+def sales_view_all_data(search_term=None):
+    if search_term:
+        c.execute("SELECT * FROM sales WHERE D_Name LIKE ?", ('%' + search_term + '%',))
+    else:
+        c.execute('SELECT * FROM sales')
+    sales_data = c.fetchall()
+    return sales_data
 
 def update_sales(drug_id, drug_quantity):
     c.execute('''SELECT D_Qty from Drugs where D_id = ?''', (drug_id,))
@@ -87,7 +96,7 @@ def admin():
     st.title("Pharmacy Database Dashboard")
     menu = ["Drugs"]
     st.sidebar.selectbox("Menu",menu)
-    menu = ["Add", "View", "Update", "Delete", "Sales"]
+    menu = ["Add", "View", "Update", "Delete", "Sales","View sales"]
     choice = st.sidebar.selectbox("Menu", menu)
     if choice == "Add":
         with st.form(key='add_drug_form'):
@@ -154,13 +163,32 @@ def admin():
 
             with col1:
                 drug_id = st.text_input("Enter the Drug id")
+                date = st.date_input("Date of sale (YYYY-MM-DD)")
+                item = st.text_input("Enter the Drug name")
             with col2:
                 drug_quantity = st.text_input("Enter the number sold:")
-
+                price = int(st.text_input('Enter price)        
+        
             if st.form_submit_button("Sell Drug"):
                 update_sales(drug_id,drug_quantity)
+                record_sale(date, item, drug_quantity, price)
                 st.success("Successfully Added Data")
-        
+            if choice == "View sales":
+                st.subheader("sales Details")
+
+                search_term = st.text_input("Search for sales")
+                search = st.checkbox("Search")
+                if search:
+                    sales_result = sales_view_all_data(search_term)
+                else:
+                    sales_result = sales_view_all_data()
+
+                sales_clean_df = pd.DataFrame(sales_result, columns=["Name", "Expiry Date", "Milligrams", "Quantity","price" ,"ID"])
+                sales_clean_df.index+=1
+                st.table(sales_clean_df)
+                if st.button('export sales'):
+                    export_sales(sale)
+            
 
 if __name__ == '__main__':
     drug_create_table()
