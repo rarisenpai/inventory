@@ -7,7 +7,6 @@ st. set_page_config(layout="wide")
 conn = sqlite3.connect("drug_data.db",check_same_thread=False)
 c = conn.cursor()
 
-@st.cache
 def drug_update(drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, drug_id):
     c.execute('''
         UPDATE Drugs 
@@ -15,8 +14,7 @@ def drug_update(drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, 
         WHERE D_id = ?
     ''', (drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, drug_id))
     conn.commit()
-    
-@st.cache
+
 def update_sales(drug_quantity,drug_id):
     drug_value = c.execute('''SELECT D_Qty from Drugs where D_id = ?'''),(drug_id)
     updated_drug_quantity = drug_value - drug_quantity 
@@ -27,12 +25,10 @@ def update_sales(drug_quantity,drug_id):
     ''', (updated_drug_quantity, drug_id))
     conn.commit()
 
-@st.cache
 def drug_delete(Did):
     c.execute(''' DELETE FROM Drugs WHERE D_id = ?''', (Did,))
     conn.commit()
 
-@st.cache
 def drug_create_table():
     c.execute('''CREATE TABLE IF NOT EXISTS Drugs(
                 D_Name VARCHAR(50) NOT NULL,
@@ -45,12 +41,10 @@ def drug_create_table():
                 ''')
     print('DRUG Table create Successfully')
 
-@st.cache
 def drug_add_data(Dname, Dexpdate, Duse, Dqty, Dprice,Did):
     c.execute('''INSERT INTO Drugs (D_Name, D_Expdate, D_Use, D_Qty, D_price,D_id) VALUES(?,?,?,?,?,?)''', (Dname, Dexpdate, Duse,Dqty,Dprice, Did))
     conn.commit()
-    
-@st.cache
+
 def drug_view_all_data(search_term=None):
     if search_term:
         c.execute("SELECT * FROM Drugs WHERE D_Name LIKE ?", ('%' + search_term + '%',))
