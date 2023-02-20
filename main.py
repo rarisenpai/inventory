@@ -49,6 +49,7 @@ def drug_create_table():
 def drug_add_data(Dname, Dexpdate, Duse, Dqty, Dprice,Did):
     c.execute('''INSERT INTO Drugs (D_Name, D_Expdate, D_Use, D_Qty, D_price,D_id) VALUES(?,?,?,?,?,?)''', (Dname, Dexpdate, Duse,Dqty,Dprice, Did))
     conn.commit()
+    
 @st.cache
 def drug_view_all_data(search_term=None):
     if search_term:
@@ -58,10 +59,7 @@ def drug_view_all_data(search_term=None):
     drug_data = c.fetchall()
     return drug_data
 
-@st.cache
 def admin():
-
-
     st.title("Pharmacy Database Dashboard")
     menu = ["Drugs"]
     st.sidebar.selectbox("Menu",menu)
