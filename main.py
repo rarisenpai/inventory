@@ -17,14 +17,16 @@ def drug_update(drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, 
 
 def update_sales(drug_id, drug_quantity):
     c.execute('''SELECT D_Qty from Drugs where D_id = ?''', (drug_id,))
-    drug_value = c.fetchone()
-    updated_drug_quantity = drug_value - drug_quantity 
-    c.execute('''
-        UPDATE Drugs 
-        SET D_Qty = ?
-        WHERE D_id = ?
-    ''', (updated_drug_quantity, drug_id))
-    conn.commit()
+    result = c.fetchone()
+    if result is not None:
+        drug_value = result[0]
+        # calculate new value of drug quantity
+        new_value = int(drug_value) - int(drug_quantity)
+        # update drug quantity in database
+        c.execute("UPDATE drugs SET quantity=? WHERE id=?", (new_value, drug_id))
+        con.commit()
+    else:
+        st.error("No drug found with ID:", drug_id)
 
 def drug_delete(Did):
     c.execute(''' DELETE FROM Drugs WHERE D_id = ?''', (Did,))
