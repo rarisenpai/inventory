@@ -90,7 +90,7 @@ def drug_view_all_data(search_term=None):
     return drug_data
 
 def admin():
-    st.title("Pharmacy Database Dashboard")
+    st.title("Wellrose Pharmacy Dashboard")
     menu = ["Drugs"]
     st.sidebar.selectbox("Menu",menu)
     menu = ["Add", "View", "Update", "Delete", "Sales","View sales"]
@@ -183,11 +183,12 @@ def admin():
         sales_clean_df = pd.DataFrame(sales_result, columns=["Name", "Expiry Date", "Milligrams", "Quantity","price" ,"ID"])
         sales_clean_df.index+=1
         st.table(sales_clean_df)
-        if st.button('export sales'):
-           csv = export_sales('sale')
-           b64 = base64.b64encode(csv.encode()).decode()
-           href = f'<a href="data:file/csv;base64,{b64}" download="sales_data.csv">Download CSV file</a>'
-           st.markdown(href, unsafe_allow_html=True)
+        csv = export_sales('sale')
+        st.download_button(
+            label="Download data as CSV",
+            data=csv,
+            file_name='sales.csv',
+        )
 
 if __name__ == '__main__':
     drug_create_table()
