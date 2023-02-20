@@ -24,7 +24,7 @@ def update_sales(drug_id, drug_quantity):
         new_value = int(drug_value) - int(drug_quantity)
         # update drug quantity in database
         c.execute("UPDATE drugs SET D_Qty=? WHERE D_id=?", (new_value, drug_id))
-        con.commit()
+        conn.commit()
     else:
         st.error("No drug found with ID:", drug_id)
 
