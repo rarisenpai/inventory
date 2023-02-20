@@ -80,7 +80,7 @@ def admin():
         else:
             drug_result = drug_view_all_data()
 
-        drug_clean_df = pd.DataFrame(drug_result, columns=["Name", "Expiry Date", "Use", "Quantity","price" "ID"])
+        drug_clean_df = pd.DataFrame(drug_result, columns=["Name", "Expiry Date", "Use", "Quantity","price" ,"ID"])
         drug_clean_df.index+=1
         st.table(drug_clean_df)
 
