@@ -3,7 +3,7 @@ import pandas as pd
 ## SQL DATABASE CODE
 import sqlite3
 
-
+st. set_page_config(layout="wide")
 conn = sqlite3.connect("drug_data.db",check_same_thread=False)
 c = conn.cursor()
 
