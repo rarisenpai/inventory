@@ -17,7 +17,7 @@ def drug_update(drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, 
 
 def update_sales(drug_id, drug_quantity):
     c.execute('''SELECT D_Qty from Drugs where D_id = ?''', (drug_id,))
-    drug_value = c.fetchone()[0]
+    drug_value = c.fetchone()
     updated_drug_quantity = drug_value - drug_quantity 
     c.execute('''
         UPDATE Drugs 
