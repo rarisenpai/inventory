@@ -15,6 +15,33 @@ def drug_update(drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, 
     ''', (drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, drug_id))
     conn.commit()
 
+def create_sales_table():
+    # create the sales table if it doesn't exist
+    c.execute('''CREATE TABLE IF NOT EXISTS sales
+                 (date TEXT, item TEXT, quantity INTEGER, price REAL, total REAL)''')
+    
+def record_sale(date, item, quantity, price):
+    # calculate the total price
+    total = quantity * price
+    
+    # insert the sale into the database
+    c.execute("INSERT INTO sales VALUES (?, ?, ?, ?, ?)", (date, item, quantity, price, total))
+    
+    # commit the transaction
+    conn.commit()
+
+def export_sales(filename):
+    # retrieve all sales from the database
+    c.execute("SELECT * FROM sales")
+    rows = c.fetchall()
+    
+    # write the sales to a CSV file
+    with open(filename, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Date', 'Item', 'Quantity', 'Price', 'Total'])
+        for row in rows:
+            writer.writerow(row)
+
 def update_sales(drug_id, drug_quantity):
     c.execute('''SELECT D_Qty from Drugs where D_id = ?''', (drug_id,))
     result = c.fetchone()
