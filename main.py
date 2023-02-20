@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 ## SQL DATABASE CODE
+import csv
 import sqlite3
 
 st. set_page_config(layout="wide")
@@ -22,7 +23,7 @@ def create_sales_table():
     
 def record_sale(date, item, quantity, price):
     # calculate the total price
-    total = quantity * price
+    total = int(quantity) * int(price)
     
     # insert the sale into the database
     c.execute("INSERT INTO sales VALUES (?, ?, ?, ?, ?)", (date, item, quantity, price, total))
@@ -167,7 +168,7 @@ def admin():
                 item = st.text_input("Enter the Drug name")
             with col2:
                 drug_quantity = st.text_input("Enter the number sold:")
-                price = int(st.text_input('Enter price'))      
+                price = st.text_input('Enter price')
         
             if st.form_submit_button("Sell Drug"):
                 update_sales(drug_id,drug_quantity)
@@ -187,7 +188,7 @@ def admin():
         sales_clean_df.index+=1
         st.table(sales_clean_df)
         if st.button('export sales'):
-            export_sales(sale)
+            export_sales('sale')
             
 
 if __name__ == '__main__':
