@@ -164,4 +164,5 @@ def admin():
 
 if __name__ == '__main__':
     drug_create_table()
+    create_sales_table()
     admin()
