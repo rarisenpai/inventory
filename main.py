@@ -32,16 +32,12 @@ def record_sale(date, item, quantity, price):
     conn.commit()
 
 def export_sales(filename):
-    # retrieve all sales from the database
-    c.execute("SELECT * FROM sales")
-    rows = c.fetchall()
-    
-    # write the sales to a CSV file
-    with open(filename, 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow(['Date', 'Item', 'Quantity', 'Price', 'Total'])
-        for row in rows:
-            writer.writerow(row)
+    # execute the query and read the results into a dataframe
+    df = pd.read_sql('SELECT * FROM sales', conn)
+
+    # create a download button for the CSV file
+    csv = df.to_csv(index=False)
+    return csv
             
 
 def sales_view_all_data(search_term=None):
@@ -188,8 +184,10 @@ def admin():
         sales_clean_df.index+=1
         st.table(sales_clean_df)
         if st.button('export sales'):
-            export_sales('sale')
-            
+           csv = export_sales('sale')
+           b64 = base64.b64encode(csv.encode()).decode()
+           href = f'<a href="data:file/csv;base64,{b64}" download="sales_data.csv">Download CSV file</a>'
+           st.markdown(href, unsafe_allow_html=True)
 
 if __name__ == '__main__':
     drug_create_table()
