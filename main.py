@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 ## SQL DATABASE CODE
-import csv
 import sqlite3
 
 st. set_page_config(layout="wide")
@@ -14,6 +13,18 @@ def drug_update(drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, 
         SET D_Name = ?, D_ExpDate = ?, D_Use = ?,D_price=?, D_Qty = ?
         WHERE D_id = ?
     ''', (drug_name, drug_expiry, drug_mainuse, drug_quantity,drug_price, drug_id))
+    conn.commit()
+
+def clear_sales():
+    c.execute('''
+    DROP TABLE sales
+    ''')
+    conn.commit()
+
+def clear_drugs():
+    c.execute('''
+    DROP TABLE drugs
+    ''')
     conn.commit()
 
 def create_sales_table():
@@ -126,6 +137,8 @@ def admin():
         drug_clean_df = pd.DataFrame(drug_result, columns=["Name", "Expiry Date", "Milligrams", "Quantity","price" ,"ID"])
         drug_clean_df.index+=1
         st.table(drug_clean_df)
+        if st.button('Clear drugs'):
+            clear_drugs()
 
 
 
@@ -146,12 +159,14 @@ def admin():
 
             if st.form_submit_button("Update Drug"):
                 drug_update(drug_name,drug_expiry,drug_mainuse,drug_quantity,drug_price,drug_id)
-                st.success("Successfully Added Data")
+                st.success("Successfully Updated Data")
+
     if choice == 'Delete':
         st.subheader("Delete Drugs")
         did = st.text_input("Drug ID")
         if st.button(label="Delete"):
             drug_delete(did)
+            st.success("Successfully Deleted Data")
             
     if choice == 'Sales':
         with st.form(key='sell_drug_form'):
@@ -169,7 +184,8 @@ def admin():
             if st.form_submit_button("Sell Drug"):
                 update_sales(drug_id,drug_quantity)
                 record_sale(date, item, drug_quantity, price)
-                st.success("Successfully Added Data")              
+                st.success("Successfully sold Data")  
+
     if choice == "View sales":
         st.subheader("sales Details")
 
@@ -179,8 +195,7 @@ def admin():
             sales_result = sales_view_all_data(search_term)
         else:
             sales_result = sales_view_all_data()
-
-        sales_clean_df = pd.DataFrame(sales_result, columns=["Name", "Expiry Date", "Milligrams", "Quantity","price" ,"ID"])
+        sales_clean_df = pd.DataFrame(sales_result, columns=["date", "item", "drug_quantity", "price"])
         sales_clean_df.index+=1
         st.table(sales_clean_df)
         csv = export_sales('sale')
@@ -189,6 +204,9 @@ def admin():
             data=csv,
             file_name='sales.csv',
         )
+        if st.button('Clear sales'):
+            clear_sales()
+
 
 if __name__ == '__main__':
     drug_create_table()
