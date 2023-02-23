@@ -37,7 +37,7 @@ def record_sale(date, item, quantity, price):
     total = int(quantity) * int(price)
     
     # insert the sale into the database
-    c.execute("INSERT INTO sales VALUES (?, ?, ?, ?, ?)", (date, item, quantity, price, total))
+    c.execute("INSERT INTO sales VALUES (?, ?, ?,?)", (date, item, quantity, price, total))
     
     # commit the transaction
     conn.commit()
