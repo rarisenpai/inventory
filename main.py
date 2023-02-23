@@ -37,7 +37,7 @@ def record_sale(date, item, quantity, price):
     total = int(quantity) * int(price)
     
     # insert the sale into the database
-    c.execute("INSERT INTO sales VALUES (?, ?, ?,?)", (date, item, quantity, price, total))
+    c.execute("INSERT INTO sales VALUES (?, ?, ?,?,?)", (date, item, quantity, price, total))
     
     # commit the transaction
     conn.commit()
@@ -195,7 +195,7 @@ def admin():
             sales_result = sales_view_all_data(search_term)
         else:
             sales_result = sales_view_all_data()
-        sales_clean_df = pd.DataFrame(sales_result, columns=["date", "item", "drug_quantity", "price"])
+        sales_clean_df = pd.DataFrame(sales_result, columns=["date", "item", "drug_quantity", "price","total"])
         sales_clean_df.index+=1
         st.table(sales_clean_df)
         csv = export_sales('sale')
